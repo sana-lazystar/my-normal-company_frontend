@@ -2,13 +2,14 @@ import { Suspense, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import '@/App.css';
+import { Provider } from '@/components';
 
 function App() {
   const healthCheck = async () => {
-    const HEALTH_URL = 'http://localhost/health';
+    const HEALTH_CHECK_URL = 'http://localhost/health';
 
     try {
-      const response = await fetch(HEALTH_URL);
+      const response = await fetch(HEALTH_CHECK_URL);
 
       if (!response.ok) throw new Error('Health check failed!');
 
@@ -16,7 +17,7 @@ function App() {
 
       console.log('Health check passed!', responseJSON);
     } catch (error) {
-      console.error(error);
+      throw new Error('Server has Down');
     }
   };
 
@@ -27,9 +28,11 @@ function App() {
   // TODO: Make fallback to Suspense component.
   return (
     <Suspense>
-      <Routes>
-        <Route path={'/home'} element={<div>Home</div>} />
-      </Routes>
+      <Provider>
+        <Routes>
+          <Route path={'/home'} element={<div>Home</div>} />
+        </Routes>
+      </Provider>
     </Suspense>
   );
 }
