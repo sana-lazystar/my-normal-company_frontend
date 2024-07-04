@@ -1,39 +1,25 @@
-import { Suspense, useEffect } from 'react';
+import { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
-import '@/App.css';
-import { Provider } from '@/components';
+import '@/App.scss';
+import { Layout, MobileStackPortal, Provider } from '@/components';
+import { ROUTE_URL } from '@/constants';
+import { Home, ProductList } from '@/pages';
 
 function App() {
-  const healthCheck = async () => {
-    const HEALTH_CHECK_URL = 'http://localhost/health';
-
-    try {
-      const response = await fetch(HEALTH_CHECK_URL);
-
-      if (!response.ok) throw new Error('Health check failed!');
-
-      const responseJSON = await response.json();
-
-      console.log('Health check passed!', responseJSON);
-    } catch (error) {
-      throw new Error('Server has Down');
-    }
-  };
-
-  useEffect(() => {
-    healthCheck();
-  }, []);
-
   // TODO: Make fallback to Suspense component.
   return (
-    <Suspense>
-      <Provider>
-        <Routes>
-          <Route path={'/home'} element={<div>Home</div>} />
-        </Routes>
-      </Provider>
-    </Suspense>
+    <Provider>
+      <Suspense>
+        <Layout>
+          <Routes>
+            <Route path={ROUTE_URL.home} element={<Home />} />
+            <Route path={ROUTE_URL.productList} element={<ProductList />} />
+          </Routes>
+        </Layout>
+        <MobileStackPortal />
+      </Suspense>
+    </Provider>
   );
 }
 

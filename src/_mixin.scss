@@ -1,0 +1,13 @@
+@import '@/_variable.scss';
+
+@mixin mobile {
+  @media (min-width: #{$breakpoint-xs}) and (max-width: #{$breakpoint-md - 1px}) {
+    @content;
+  }
+}
+
+@mixin pc {
+  @media (min-width: #{$breakpoint-md}) {
+    @content;
+  }
+}
