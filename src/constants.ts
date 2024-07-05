@@ -9,6 +9,15 @@ export const MILLISECOND_TIME_FORMAT = {
 export const ROUTE_URL = {
   home: '/',
   productList: '/product/list',
-  productListWithSeller: '/product/list/:sellerId',
-  productDetail: '/product/:productId',
+} as const;
+
+export const API_URL = {
+  product: {
+    list: '/',
+    detail: '/products',
+  },
+  seller: {
+    list: '/sellers',
+    favorite: (seller: string) => `/sellers/${seller}:favorite`,
+  },
 } as const;
