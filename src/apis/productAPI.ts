@@ -1,19 +1,23 @@
 import { baseAPI } from './baseAPI';
-import { BaseResponse, Product, ProductList, product, productList } from './responses';
+import {
+  BasePageableRequest,
+  BaseResponse,
+  Product,
+  ProductList,
+  product,
+  productList,
+} from './responses';
 
 import { API_URL } from '@/constants';
 
-type GetProductListRequest = {
-  start?: number;
-};
+type GetProductListRequest = BasePageableRequest;
 
 type GetProductListResponse = BaseResponse<ProductList>;
 
 export const getProductListAPI = async ({ start }: GetProductListRequest) => {
   const response = await baseAPI<GetProductListResponse>({
-    url: API_URL.product.list,
+    url: `${API_URL.product.list}?start=${start}`,
     method: 'get',
-    params: start,
   });
 
   if (response.status !== 200) throw new Error('Failed to get product list');
@@ -27,7 +31,7 @@ type GetProductDetailResponse = BaseResponse<Product>;
 
 export const getProductDetailAPI = async ({ name }: GetProductDetailRequest) => {
   const response = await baseAPI<GetProductDetailResponse>({
-    url: `${API_URL.product.detail}/${name}`,
+    url: `${API_URL.product.detail}/${encodeURIComponent(name)}`,
     method: 'get',
   });
 

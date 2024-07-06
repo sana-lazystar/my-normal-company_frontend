@@ -3,6 +3,8 @@ import { z } from 'zod';
 
 import { product, productList } from './objects';
 
+export type BasePageableRequest = { start?: number };
+
 export type BaseResponse<Data> = {
   config: unknown;
   data: Data;
