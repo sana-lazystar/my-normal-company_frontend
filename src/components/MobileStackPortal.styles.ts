@@ -8,6 +8,7 @@ export const MobileStackPortalContainer = styled.div<MobileStackPortalContainerP
   position: fixed;
   top: 0;
   left: ${({ hasMobileStackHistory }) => (hasMobileStackHistory ? '0' : '-100%')};
+  z-index: 2;
   width: 100%;
   height: 100%;
   transition: left 0.5s;

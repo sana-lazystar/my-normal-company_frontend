@@ -1,61 +1,51 @@
-import { useEffect } from 'react';
+import { useMemo } from 'react';
 
-import {
-  useProductDetailQuery,
-  useProductListInfiniteQuery,
-  useSellerFavoriteDeleteMutation,
-  useSellerFavoritePostMutation,
-  useSellerProductListInfiniteQuery,
-} from '@/services';
-import { useMobileStackStore } from '@/stores';
+import * as S from './ProductList.styles';
+
+import { ProductCard } from '@/components';
+import { useProductListInfiniteQuery } from '@/services';
+
+const SKELETON_PRODUCT_LIST = new Array(3).fill({});
 
 export const ProductList: React.FC = () => {
-  const { open } = useMobileStackStore();
+  const { data, fetchNextPage, isLoading, isFetchingNextPage, hasNextPage } =
+    useProductListInfiniteQuery();
 
-  const { data: dataOne } = useProductDetailQuery('레드 런닝화');
-  const { data, fetchNextPage } = useProductListInfiniteQuery();
-  const { data: data2, fetchNextPage: fetchNextPageOnData2 } =
-    useSellerProductListInfiniteQuery('신발도매상');
-  const { mutateAsync: addFavorite } = useSellerFavoritePostMutation('신발도매상');
-  const { mutateAsync: deleteFavorite } = useSellerFavoriteDeleteMutation('신발도매상');
+  const productList = useMemo(() => data?.pages.flatMap(page => page), [data]);
 
-  const onProductDetailButtonClick = () => {
-    open('ProductDetail', { productId: 'Product123' });
+  const onShowMoreProductButtonClick = () => {
+    fetchNextPage();
   };
-
-  const onProductListWithSellerButtonClick = () => {
-    open('ProductListWithSeller', { sellerId: 'Seller123' });
-  };
-
-  const onFavoriteButtonClick = async () => {
-    await addFavorite();
-  };
-
-  const onDeleteFavoriteButtonClick = async () => {
-    await deleteFavorite();
-  };
-
-  useEffect(() => {
-    console.info(data);
-  }, [data]);
-
-  useEffect(() => {
-    console.info(data2);
-  }, [data2]);
-
-  useEffect(() => {
-    console.info(dataOne);
-  }, [dataOne]);
 
   return (
-    <div>
-      Product List
-      <button onClick={onProductDetailButtonClick}>ProductDetail Show</button>
-      <button onClick={onProductListWithSellerButtonClick}>ProductListWithSeller Show</button>
-      <button onClick={() => fetchNextPage()}>Fetch Next Page</button>
-      <button onClick={() => fetchNextPageOnData2()}>Fetch Next Page On Data2</button>
-      <button onClick={() => onFavoriteButtonClick()}>좋아용!</button>
-      <button onClick={() => onDeleteFavoriteButtonClick()}>싫어용!!</button>
-    </div>
+    <S.ScrollableContainer>
+      <S.TitleSection>
+        <S.Title>
+          인아웃 슈즈
+          <br />
+          이달의 추천 상품
+        </S.Title>
+      </S.TitleSection>
+      <S.ProductSection>
+        {isLoading ? (
+          SKELETON_PRODUCT_LIST.map((_, skeletonIndex) => <ProductCard key={skeletonIndex} />)
+        ) : productList ? (
+          productList.map((product, productIndex) => (
+            <ProductCard key={productIndex} {...product} />
+          ))
+        ) : (
+          <S.HasNoProductText>등록된 상품이 없어요 :(</S.HasNoProductText>
+        )}
+        {hasNextPage ? (
+          <S.ShowMoreProductButton
+            disabled={isFetchingNextPage}
+            onClick={onShowMoreProductButtonClick}>
+            <S.ShowMoreProductButtonText>상품 더보기</S.ShowMoreProductButtonText>
+          </S.ShowMoreProductButton>
+        ) : (
+          <S.HasNoProductText>모든 상품을 둘러보았어요 :)</S.HasNoProductText>
+        )}
+      </S.ProductSection>
+    </S.ScrollableContainer>
   );
 };

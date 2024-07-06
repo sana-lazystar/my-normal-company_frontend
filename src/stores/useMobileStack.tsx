@@ -3,15 +3,15 @@ import { create } from 'zustand';
 import {
   ProductDetail,
   ProductDetailProps,
-  ProductListWithSeller,
-  ProductListWithSellerProps,
+  SellerProductList,
+  SellerProductListProps,
 } from '@/pages';
 
 /** NOTE: Mobile에서 Stack형태의 페이지 처리를 원할 경우, 아래 MOBILE_STACKS에 페이지 컴포넌트를 추가하면 됩니다. */
 export const REGISTERED_MOBILE_STACKS = {
-  ProductListWithSeller: {
-    component: ProductListWithSeller,
-    propTypes: {} as ProductListWithSellerProps,
+  SellerProductList: {
+    component: SellerProductList,
+    propTypes: {} as SellerProductListProps,
   },
   ProductDetail: {
     component: ProductDetail,

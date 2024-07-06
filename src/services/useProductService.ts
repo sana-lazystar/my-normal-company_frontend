@@ -19,9 +19,9 @@ export const useProductListInfiniteQuery = (start?: number) =>
     initialPageParam: { start },
   });
 
-export const useProductDetailQuery = (name: string) =>
+export const useProductDetailQuery = (name?: string) =>
   useQuery({
-    queryKey: productQueryKeys.detail(name),
-    queryFn: () => getProductDetailAPI({ name }),
+    queryKey: productQueryKeys.detail(name ?? ''),
+    queryFn: () => getProductDetailAPI({ name: name ?? '' }),
     enabled: !!name,
   });

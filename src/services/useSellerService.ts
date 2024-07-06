@@ -32,19 +32,19 @@ export const useSellerProductListInfiniteQuery = (seller?: string, start?: numbe
     enabled: !!seller,
   });
 
-export const useSellerFavoritePostMutation = (seller: string) => {
+export const useSellerFavoritePostMutation = () => {
   const queryClient = getQueryClient();
 
   return useMutation({
-    mutationFn: () => addSellerFavoriteAPI({ seller }),
-    onSuccess: () => {
+    mutationFn: (seller: string) => addSellerFavoriteAPI({ seller }),
+    onSuccess: (_, variables) => {
       queryClient.setQueriesData({ queryKey: ['products'], type: 'active' }, prev => {
         if (isPageableProductList(prev)) {
           return {
             ...prev,
             pages: prev.pages.map(productList =>
               productList.map(product =>
-                product.seller === seller ? { ...product, favorite: true } : product
+                product.seller === variables ? { ...product, favorite: true } : product
               )
             ),
           };
@@ -60,19 +60,21 @@ export const useSellerFavoritePostMutation = (seller: string) => {
   });
 };
 
-export const useSellerFavoriteDeleteMutation = (seller: string) => {
+export const useSellerFavoriteDeleteMutation = () => {
   const queryClient = getQueryClient();
 
   return useMutation({
-    mutationFn: () => deleteSellerFavoriteAPI({ seller }),
-    onSuccess: () => {
+    mutationFn: (seller: string) => deleteSellerFavoriteAPI({ seller }),
+    onSuccess: (_, variables) => {
+      console.info(variables);
+
       queryClient.setQueriesData({ queryKey: ['products'], type: 'active' }, prev => {
         if (isPageableProductList(prev)) {
           return {
             ...prev,
             pages: prev.pages.map(productList =>
               productList.map(product =>
-                product.seller === seller ? { ...product, favorite: false } : product
+                product.seller === variables ? { ...product, favorite: false } : product
               )
             ),
           };

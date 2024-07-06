@@ -21,3 +21,7 @@ export const API_URL = {
     favorite: (seller: string) => `/sellers/${seller}:favorite`,
   },
 } as const;
+
+const BREAK_POINTS = [480, 1024, 1440, 1920] as const;
+
+export const MEDIA_QUERY = BREAK_POINTS.map(breakPoint => `@media (max-width: ${breakPoint}px)`);
